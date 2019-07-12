@@ -152,9 +152,10 @@ float SubHead::peek4() {
 }
 
 unsigned int SubHead::wrapBufIndex(int x) {
-    x += bufFrames_;
-    // BOOST_ASSERT_MSG(x >= 0, "buffer index before masking is non-negative");
-    return x & bufMask_;
+    int y = x;
+    while (y < 0) { y += bufFrames_; }
+    while (y >= bufFrames_) { y -= bufFrames_; }
+    return y;
 }
 
 void SubHead::setSampleRate(float sr) {
@@ -175,7 +176,6 @@ void SubHead::setPhase(phase_t phase) {
 void SubHead::setBuffer(float *buf, unsigned int frames) {
     buf_  = buf;
     bufFrames_ = frames;
-    bufMask_ = frames - 1;
     // BOOST_ASSERT_MSG((bufFrames_ != 0) && !(bufFrames_ & bufMask_), "buffer size is not 2^N");
 }
 
